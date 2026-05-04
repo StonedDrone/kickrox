@@ -2,593 +2,923 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <link rel=\"manifest\" href=\"manifest.json\">\n    <meta name=\"theme-color\" content=\"#ff4400\">\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">\n    <link rel=\"apple-touch-icon\" href=\"res/icon-512.png\">\n    <title>Kick RoX • NOLA Esk8 Tracker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Esk8Nola | Parisite Rises</title>
     <style>
         * {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
         body {
-            background: black;
+            background: #050505;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #fff;
             overflow-x: hidden;
         }
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-        .animate-pulse-fast {
-            animation: pulse-red 0.5s ease-in-out infinite;
-        }
-        @keyframes slide-up {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slide-up {
-            animation: slide-up 0.3s ease-out;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        /* Custom Cursor Ember */
+        .ember-cursor {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,100,0,0.8) 0%, rgba(255,50,0,0) 70%);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            transition: transform 0.05s linear;
         }
 
-        /* Tooltip system */
-        [data-tip] { position: relative; cursor: help; }
-        [data-tip]::after {
-            content: attr(data-tip);
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%) scale(0.85);
-            background: #1a1a1a;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 500;
-            line-height: 1.4;
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,68,0,0.3);
+        /* Canvas Particle System */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s, transform 0.15s;
-            z-index: 999;
-            max-width: 200px;
-            white-space: normal;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 1;
         }
-        [data-tip]:hover::after { opacity: 1; transform: translateX(-50%) scale(1); }
-        [data-tip-bottom]::after { bottom: auto; top: calc(100% + 8px); }
-        [data-tip-left]::after { left: auto; right: calc(100% + 8px); top: 50%; transform: translateY(-50%) scale(0.85); }
-        [data-tip-left]:hover::after { transform: translateY(-50%) scale(1); }
-        [data-tip-wide]::after { white-space: normal; max-width: 220px; }
-        @media (hover: none) { [data-tip]::after { display: none; } }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Glitch Text */
+        .glitch {
+            position: relative;
+            animation: glitch-skew 3s infinite;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 0.4s infinite;
+            color: #ff0000;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 0.4s infinite;
+            color: #00ff00;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            50% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, 0); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            50% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 0); }
+        }
+
+        @keyframes glitch-skew {
+            0%, 100% { transform: skew(0deg); }
+            50% { transform: skew(1deg); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, #050505 100%);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 68, 0, 0.08) 0px,
+                rgba(255, 68, 0, 0.08) 2px,
+                transparent 2px,
+                transparent 8px
+            );
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .hero .burned {
+            color: #ff4400;
+            text-shadow: 0 0 20px rgba(255,68,0,0.5);
+        }
+
+        .hero .broken {
+            color: #fff;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: #aaa;
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            border-left: 4px solid #ff4400;
+            padding-left: 1rem;
+        }
+
+        .fire-text {
+            color: #ff4400;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,68,0,0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            border-color: #ff4400;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(255,68,0,0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .card p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            padding: 1rem;
+            border-left: 2px solid #ff4400;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .timeline-year {
+            font-weight: 900;
+            color: #ff4400;
+            min-width: 80px;
+            font-size: 1.25rem;
+        }
+
+        .timeline-text {
+            color: #ccc;
+        }
+
+        /* Countdown */
+        .countdown {
+            background: rgba(255,68,0,0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255,68,0,0.3);
+            margin: 2rem 0;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .countdown-box {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: rgba(0,0,0,0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            min-width: 80px;
+            display: inline-block;
+        }
+
+        .countdown-label {
+            color: #ff4400;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #ff4400;
+            color: #000;
+            text-decoration: none;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #ff6611;
+            transform: scale(1.02);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff4400;
+            color: #ff4400;
+        }
+
+        .btn-outline:hover {
+            background: #ff4400;
+            color: #000;
+        }
+
+        /* Email Signup */
+        .signup-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .signup-form input {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,68,0,0.3);
+            border-radius: 0.5rem;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .signup-form input:focus {
+            outline: none;
+            border-color: #ff4400;
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0a0a;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,68,0,0.2);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ff4400;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            section {
+                padding: 3rem 1rem;
+            }
+            .timeline-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .countdown-timer {
+                gap: 1rem;
+            }
+            .countdown-number {
+                font-size: 1.5rem;
+                min-width: 60px;
+            }
+        }
+
+
+        /* First Founding FuX */
+        .fux-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .fux-card {
+            background: rgba(255,68,0,0.08);
+            border: 1px solid rgba(255,68,0,0.25);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .fux-card:hover {
+            border-color: #ff4400;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255,68,0,0.15);
+        }
+        .fux-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ff4400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin: 0 auto 0.75rem;
+            color: #000;
+            border: 2px solid #ff4400;
+        }
+        .fux-handle {
+            font-weight: 900;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+        .fux-board {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .fux-spot {
+            color: #ff4400;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .fux-why { margin-top: 0.5rem; font-size: 0.8rem; color: #aaa; font-style: italic; padding-top: 0.5rem; border-top: 1px solid rgba(255,68,0,0.15); line-height: 1.4; }
+        .fux-badge {
+            display: inline-block;
+            background: #ff4400;
+            color: #000;
+            font-size: 0.6rem;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+        .fux-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .fux-form-grid .full {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 600px) {
+            .fux-form-grid { grid-template-columns: 1fr; }
+            .fux-wall { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
+        .fux-stamp {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,68,0,0.1);
+            border: 1px solid rgba(255,68,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ff4400;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fux-stamp:hover {
+            background: #ff4400;
+            color: #000;
+        }
+        .fux-stamp input { display: none; }
+        .fux-stamp.selected {
+            background: #ff4400;
+            color: #000;
+        }
+    
     </style>
 </head>
-<body class="bg-black text-white">
+<body>
 
-<div id="root"></div>
+<canvas id="particleCanvas"></canvas>
+<div class="ember-cursor"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<div class="content">
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <div class="hero-overlay"></div>
+        <div>
+            <h1>
+                <span class="burned">BURNED.</span><br>
+                <span class="broken">NOT BROKEN.</span>
+            </h1>
+            <div class="hero-sub">PARISITE SKATEPARK • 2008 – APRIL 20, 2026</div>
+            <a href="#story" class="btn">READ THE STORY</a>
+            <a href="https://stoneddrone.github.io/kickrox/" target="_blank" class="btn btn-outline" style="margin-left: 1rem;">TRY KICK ROX</a>
+        </div>
+    </div>
+
+    <!-- STORY SECTION -->
+    <section id="story">
+        <h2 class="section-title">THE <span class="fire-text">FIRE</span></h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">🔥</div>
+                <h3>APRIL 20, 2026</h3>
+                <p>Smoke rose from under I-610. Wooden ramps – built by hand, loved for years – caught fast. The interstate shut down for 3+ hours. Engineers inspected the concrete for structural damage.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🛹</div>
+                <h3>WHAT WE LOST</h3>
+                <p>Decades of DIY culture. Hand-built ramps. A living graffiti museum. Late-night sessions under the highway lights. A sanctuary that asked for nothing.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚜️</div>
+                <h3>WHAT REMAINS</h3>
+                <p>The concrete still stands. The community is still here. Parisite wasn't the ramps. Parisite was us. And we're not going anywhere.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROPHECY SECTION (Domain Story) -->
+    <section>
+        <h2 class="section-title">THE <span class="fire-text">PROPHECY</span></h2>
+        <div class="card" style="text-align: center; max-width: 600px; margin: 0 auto;">
+            <div class="card-icon">📅</div>
+            <h3>APRIL 17, 2026</h3>
+            <p style="font-size: 1.1rem; margin: 1rem 0;">Three days before the fire, someone bought Esk8Nola.org.</p>
+            <p style="color: #ff4400; font-weight: bold;">Not a coincidence. Instinct.</p>
+            <p style="margin-top: 1rem;">"Safety First" isn't a slogan. It's what you do before people need you.</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #888;">— JayNdaboX, MyFuX.U Protocol</p>
+        </div>
+    </section>
+
+    <!-- PARISITE TIMELINE -->
+    <section>
+        <h2 class="section-title">THE <span class="fire-text">HISTORY</span></h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-year">2008</div>
+                <div class="timeline-text">First ramp built under I-610. Parisite is born from stolen plywood and borrowed tools.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2010-2025</div>
+                <div class="timeline-text">The golden years. Bowl riders, street skaters, BMX, rollerblades. The graffiti wall becomes a living museum. The community grows.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">APRIL 17, 2026</div>
+                <div class="timeline-text">Esk8Nola.org is registered. Before the fire. Before anyone knew.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">APRIL 20, 2026</div>
+                <div class="timeline-text">The fire. Parisite burns. I-610 shut down. The park is gone. The community is not.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">JULY 24-26, 2026</div>
+                <div class="timeline-text">X Games lands at the Caesars Superdome. The world watches New Orleans action sports. We will be there.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- X GAMES COUNTDOWN -->
+    <section>
+        <h2 class="section-title">THE <span class="fire-text">X GAMES</span></h2>
+        <div class="countdown">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">JULY 24-26, 2026</h3>
+            <p>Caesars Superdome • New Orleans</p>
+            <div class="countdown-timer" id="countdown">
+                <div class="countdown-box"><span class="countdown-number" id="days">--</span><span class="countdown-label">DAYS</span></div>
+                <div class="countdown-box"><span class="countdown-number" id="hours">--</span><span class="countdown-label">HOURS</span></div>
+                <div class="countdown-box"><span class="countdown-number" id="minutes">--</span><span class="countdown-label">MINUTES</span></div>
+                <div class="countdown-box"><span class="countdown-number" id="seconds">--</span><span class="countdown-label">SECONDS</span></div>
+            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem;">🎫 4 tickets in hand. 888 gear on. Veymax Mini 2 charged. Kick RoX tracker running.</p>
+            <p style="color: #ff4400;">Find me at the Superdome.</p>
+        </div>
+    </section>
+
+    <!-- THE WEAPONS (Your Arsenal) -->
+    <section>
+        <h2 class="section-title">THE <span class="fire-text">ARSENAL</span></h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">🎫</div>
+                <h3>4 X GAMES TICKETS</h3>
+                <p>July 24-26. Superdome. I'm bringing a squad. You'll find us.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🛡️</div>
+                <h3>888 GEAR</h3>
+                <p>Pads + helmet. The best protection money can buy. I wear what I sell.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🛹</div>
+                <h3>VEYMAX MINI 2</h3>
+                <p>25+ mph. 15+ mile range. My ride. My proof of concept.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📱</div>
+                <h3>KICK ROX TRACKER</h3>
+                <p>Live fall detection. Hazard reports. ICE profile. Squad chat. <a href="https://stoneddrone.github.io/kickrox/" target="_blank" style="color: #ff4400;">TRY IT NOW →</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FUX.U PROTOCOL INTEGRATION -->
+    <section>
+        <h2 class="section-title">THE <span class="fire-text">PROTOCOL</span></h2>
+        <div class="card" style="text-align: center;">
+            <div class="card-icon">⚜️</div>
+            <h3>MY FUX.U PROTOCOL</h3>
+            <p style="margin: 1rem 0;">Haptic alert patches. LED armor. Blockchain-verified authenticity.<br>Safety you can see. Safety you can <strong>feel</strong>.</p>
+            <p style="color: #ff4400;">Coming end of year. But the tracker is live NOW.</p>
+            <div style="margin-top: 1rem;">
+                <a href="https://www.indiegogo.com/en/projects/forurxperienceu/fuxu-safety-first" target="_blank" class="btn">BACK ON INDIEGOGO</a>
+                <a href="https://fux-bible-website-0gbent.abacusai.app/" target="_blank" class="btn btn-outline" style="margin-left: 1rem;">READ THE BIBLE</a>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- FIRST FOUNDING FUX -->
+    <section id=fux>
+        <h2 class=section-title>THE FIRST <span class=fire-text>FOUNDING FUX</span></h2>
+        <div class=card style=max-width:700px;margin:0 auto 2rem;text-align:center;>
+            <div class=card-icon>&#9878;</div>
+            <p style=font-size:1.1rem;margin:1rem 0 0.5rem;>These are the ones who gave a FuX.</p>
+            <p style=color:#888;font-size:0.9rem;>Before Parisite burned. Before the tracker existed. Before the crowd showed up. You were there when it mattered.</p>
+            <p style=color:#ff4400;font-weight:bold;margin-top:0.75rem;>That earns you a permanent spot on this wall.</p>
+        </div>
+
+        <!-- The Crew Wall -->
+        <div class=fux-wall id=fuxWall>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9878;</div>
+                <div class=fux-handle>StonedDrone</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>To give the crew something real. Safety. Tracking. A way to find each other when it matters.</div>
+                <div class=fux-board>Veymax Mini 2</div>
+                <div class=fux-spot>&#9670; Lower 9th Ward</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9832;</div>
+                <div class=fux-handle>GHOST</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>Riding since day one. Parisite was home. I stay for the people.</div>
+                <div class=fux-board>Own board TBD</div>
+                <div class=fux-spot>&#9670; French Quarter</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9834;</div>
+                <div class=fux-handle>VOODOO</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>The streets of Esk8Nola built different. We ride because we have to.</div>
+                <div class=fux-board>Own board TBD</div>
+                <div class=fux-spot>&#9670; Marigny</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9827;</div>
+                <div class=fux-handle>SWAMP</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>Found my crew under that bridge. Not stopping now.</div>
+                <div class=fux-board>Own board TBD</div>
+                <div class=fux-spot>&#9670; Irish Channel</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+        </div>
+
+        <!-- Sign Up -->
+        <div class=card style=max-width:600px;margin:2.5rem auto 0;text-align:center;>
+            <h3 style=font-size:1.4rem;margin-bottom:0.5rem;>&#9878; JOIN THE FOUNDING FUX</h3>
+            <p style=color:#888;font-size:0.9rem;margin-bottom:1.5rem;>Give a FuX. Sign up. Get on the wall.</p>
+
+            <form id=fuxForm onsubmit=handleFuxSubmit(event)>
+                <div class=fux-form-grid>
+                    <div class=full>
+                        <input type=text name=handle placeholder=Handle / Rider Name required style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div>
+                        <input type=text name=board placeholder=Your board (e.g. Veymax Mini 2) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div>
+                        <input type=text name=spot placeholder=Your spot (e.g. Lower 9th Ward) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div class=full>
+                        <input type=text name=contact placeholder=Discord or Email (how we reach you) required style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div class=full>
+                        <input type=text name=why placeholder=Why I ride Esk8Nola... (what keeps you rolling?) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                </div>
+                <div style=margin-top:1rem;text-align:left;>
+                    <p style=color:#888;font-size:0.8rem;margin-bottom:0.5rem;>What best describes you?</p>
+                    <div style=display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;>
+                        <label class=fux-stamp><input type=radio name=type value=og checked> OG ESK8</label>
+                        <label class=fux-stamp><input type=radio name=type value=new> New to ESK8</label>
+                        <label class=fux-stamp><input type=radio name=type value=builder> Ramp Builder</label>
+                        <label class=fux-stamp><input type=radio name=type value=vendor> Gear Vendor</label>
+                        <label class=fux-stamp><input type=radio name=type value=crew> Just love the crew</label>
+                    </div>
+                </div>
+                <button type=submit class=btn style=margin-top:1.25rem;width:100%;>GIVE A FUX &#9878;</button>
+            </form>
+            <p id=fuxMsg style=margin-top:1rem;color:#ff4400;font-weight:bold;display:none;></p>
+            <p style=font-size:0.75rem;color:#555;margin-top:0.75rem;>Your info stays on your device. No server. No tracking. Just us.</p>
+        </div>
+    </section>
+
+    
+    <!-- ACTION SECTION - PARISITE WILL RISE -->
+    <section>
+        <h2 class="section-title">PARISITE WILL <span class="fire-text">RISE</span></h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">📢</div>
+                <h3>SPREAD THE WORD</h3>
+                <p>#ParisiteRises #Esk8Nola #FUXUSafetyFirst</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🗣️</div>
+                <h3>CITY COUNCIL</h3>
+                <p>Demand a new skatepark. Use our voice. They can't ignore us forever.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🤝</div>
+                <h3>JOIN THE HUNT</h3>
+                <p>Group rides. Rebuild meetings. X Games meetup. Sign up below.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EMAIL SIGNUP -->
+    <section>
+        <div class="card" style="text-align: center;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">🔥 PARISITE WILL RISE 🔥</h3>
+            <p>Sign up for:<br>
+            📍 Rebuild coordination<br>
+            🛹 Group ride alerts<br>
+            ⚡ FuX.U patch drops<br>
+            🏟️ X Games meetup location</p>
+            <form class="signup-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                <input type="email" name="email" placeholder="Your email address" required>
+                <button type="submit" class="btn">JOIN THE RISE</button>
+            </form>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 1rem;">* For a working form, replace YOUR_FORM_ID with your Formspree endpoint (free). Or just collect emails manually for now.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://stoneddrone.github.io/kickrox/" target="_blank">KICK ROX TRACKER</a>
+            <a href="https://www.indiegogo.com/en/projects/forurxperienceu/fuxu-safety-first" target="_blank">INDIGOGO</a>
+            <a href="https://fux-bible-website-0gbent.abacusai.app/" target="_blank">MY FUX.U PROTOCOL</a>
+        </div>
+        <div>
+            <p>&#9878; Esk8Nola • Safety First. Ride or Die.</p><p style=font-size:0.8rem;margin-top:0.5rem;color:#ff4400;>First Founding FuX: the ones who gave a FuX first.</p>
+            <p style="font-size: 0.8rem; margin-top: 1rem;">"I gave my only FuX to the FuX.U"</p>
+            <p style="font-size: 0.7rem; margin-top: 1rem;">#ParisiteRises #Esk8Nola #FUXUSafetyFirst #XGames2026</p>
+        </div>
+    </footer>
+</div>
+
 <script>
-    // Mock Data
-    const INITIAL_SQUAD = [
-        { id: "1", name: "GHOST", status: "riding", lastSeen: new Date(), currentSpeed: 28.4, battery: 67 },
-        { id: "2", name: "VOODOO", status: "ready", lastSeen: new Date() },
-        { id: "3", name: "SWAMP", status: "riding", lastSeen: new Date(), currentSpeed: 31.2, battery: 43 },
-        { id: "4", name: "ROUX", status: "offline", lastSeen: new Date(Date.now() - 3600000) },
-    ];
+    // PARTICLE SYSTEM (Embers)
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId;
 
-    const CHECKLIST = [
-        { id: "c1", label: "Helmet & protective gear", category: "safety", required: true },
-        { id: "c2", label: "Board battery charged", category: "electrical", required: true },
-        { id: "c3", label: "Remote battery", category: "electrical", required: true },
-        { id: "c4", label: "Bolts & hardware tight", category: "mechanical", required: true },
-        { id: "c5", label: "Belt / drive condition", category: "mechanical", required: true },
-        { id: "c6", label: "Wheels & bearings", category: "mechanical", required: false },
-    ];
-
-    // Helper functions
-    function formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
 
-    const { useState, useEffect, useMemo, useCallback } = React;
+    function createParticle(x, y) {
+        return {
+            x: x || Math.random() * canvas.width,
+            y: y || canvas.height,
+            radius: Math.random() * 3 + 1,
+            alpha: Math.random() * 0.5 + 0.2,
+            speedY: Math.random() * 1 + 0.5,
+            speedX: (Math.random() - 0.5) * 0.5,
+            color: `rgba(255, ${Math.random() * 100 + 50}, 0, ${Math.random() * 0.6})`
+        };
+    }
 
-    // Components
-    const FallAlertOverlay = ({ countdown, onAbort }) => {
-        return React.createElement('div', {
-            className: "fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 text-white p-6",
-            style: { backdropFilter: 'blur(20px)' }
-        }, [
-            React.createElement('div', { key: "icon", className: "text-8xl font-black mb-6 animate-pulse" }, "⚠️"),
-            React.createElement('h1', { key: "title", className: "text-4xl font-black uppercase tracking-wider mb-3 text-center" }, "IMPACT DETECTED"),
-            React.createElement('p', { key: "sub", className: "text-xl mb-8 text-orange-400 text-center" }, "Broadcasting to squad in..."),
-            React.createElement('div', { key: "timer", className: "text-[140px] font-black leading-none mb-10 text-orange-500" }, countdown),
-            React.createElement('button', {
-                key: "button",
-                onClick: onAbort,
-                className: "bg-white text-black text-2xl font-black uppercase px-10 py-5 rounded-2xl hover:bg-zinc-200 transition active:scale-95"
-            }, "I'M OK — ABORT")
-        ]);
-    };
+    function initParticles(count) {
+        for (let i = 0; i < count; i++) {
+            particles.push(createParticle());
+        }
+    }
 
-    const HazardAlert = ({ hazard, onAcknowledge }) => {
-        return React.createElement('div', {
-            className: "fixed top-20 left-4 right-4 z-40 bg-red-600/95 backdrop-blur border-2 border-red-400 rounded-2xl p-5 shadow-2xl animate-slide-up"
-        }, [
-            React.createElement('div', { key: "title", className: "text-xl font-black uppercase tracking-wider mb-2 text-center" }, "⚠️ HAZARD AHEAD"),
-            React.createElement('div', { key: "desc", className: "text-lg font-bold text-center mb-2" }, hazard.title),
-            React.createElement('div', { key: "dist", className: "text-sm text-center mb-4" }, `${hazard.distanceM}m ahead`),
-            React.createElement('button', {
-                key: "button",
-                onClick: onAcknowledge,
-                className: "w-full py-3 bg-white/20 rounded-xl font-bold uppercase text-sm hover:bg-white/30 transition"
-            }, "ACKNOWLEDGE")
-        ]);
-    };
+    function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+            
+            p.y -= p.speedY;
+            p.x += p.speedX;
+            p.alpha -= 0.002;
+            
+            if (p.y < -10 || p.alpha <= 0) {
+                particles[i] = createParticle();
+            }
+        }
+        
+        animationId = requestAnimationFrame(drawParticles);
+    }
 
-    const Speedometer = ({ speed }) => {
-        return React.createElement('div', { className: "relative" }, [
-            React.createElement('div', { key: "value", className: `text-[180px] font-black leading-none tracking-tighter bg-gradient-to-r from-white to-orange-400 bg-clip-text text-transparent text-center` }, Math.round(speed)),
-            React.createElement('div', { key: "unit", className: "text-2xl font-bold text-orange-400 uppercase tracking-widest text-center mt-2" }, "km/h")
-        ]);
-    };
+    // Cursor ember
+    const cursor = document.querySelector('.ember-cursor');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX - 10 + 'px';
+        cursor.style.top = e.clientY - 10 + 'px';
+        
+        // Create occasional particles at cursor
+        if (Math.random() < 0.1 && particles.length < 150) {
+            particles.push({
+                x: e.clientX,
+                y: e.clientY,
+                radius: Math.random() * 4 + 2,
+                alpha: 1,
+                speedY: Math.random() * 1 + 0.3,
+                speedX: (Math.random() - 0.5) * 1,
+                color: `rgba(255, ${Math.random() * 100 + 50}, 0, 0.8)`
+            });
+        }
+    });
 
-    const SquadStatus = ({ squad }) => {
-        const ridingSquad = squad.filter(s => s.status === 'riding');
-        return React.createElement('div', { className: "space-y-3" }, [
-            React.createElement('div', { key: "header", className: "flex justify-between items-center mb-2" }, [
-                React.createElement('h3', { key: "title", className: "font-black text-lg" }, "Squad Status"),
-                React.createElement('span', { key: "count", className: "text-xs bg-orange-500/20 px-2 py-1 rounded-full" }, `${ridingSquad.length} riding`)
-            ]),
-            ...squad.map(member => React.createElement('div', {
-                key: member.id,
-                className: "flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/10"
-            }, [
-                React.createElement('div', { key: "info" }, [
-                    React.createElement('div', { key: "name", className: "font-bold uppercase" }, member.name),
-                    React.createElement('div', { key: "status", className: "text-xs text-zinc-500" }, member.status)
-                ]),
-                member.status === 'riding' && React.createElement('div', { key: "speed", className: "text-orange-400 font-bold text-sm" }, `${member.currentSpeed} km/h`)
-            ]))
-        ]);
-    };
+    // X Games Countdown
+    function updateCountdown() {
+        const target = new Date('July 24, 2026 00:00:00').getTime();
+        const now = new Date().getTime();
+        const diff = target - now;
+        
+        if (diff > 0) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (86400000)) / (3600000));
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            
+            document.getElementById('days').innerHTML = days;
+            document.getElementById('hours').innerHTML = hours;
+            document.getElementById('minutes').innerHTML = minutes;
+            document.getElementById('seconds').innerHTML = seconds;
+        }
+    }
 
-    const ICEPanel = () => {
-        return React.createElement('div', { className: "space-y-4" }, [
-            React.createElement('div', { key: "profile", className: "space-y-3" }, [
-                React.createElement('div', { key: "blood", className: "flex justify-between p-3 bg-white/5 rounded-xl" }, [
-                    React.createElement('span', { key: "label", className: "text-zinc-400" }, "Blood Type"),
-                    React.createElement('span', { key: "value", className: "font-bold text-orange-400" }, "O-")
-                ]),
-                React.createElement('div', { key: "contact", className: "flex justify-between p-3 bg-white/5 rounded-xl" }, [
-                    React.createElement('span', { key: "label", className: "text-zinc-400" }, "Emergency Contact"),
-                    React.createElement('span', { key: "value", className: "font-bold" }, "Sarah M. • 555-019-3824")
-                ]),
-                React.createElement('div', { key: "allergies", className: "p-3 bg-white/5 rounded-xl" }, [
-                    React.createElement('div', { key: "label", className: "text-zinc-400 text-sm mb-1" }, "Allergies"),
-                    React.createElement('div', { key: "value", className: "font-bold" }, "Penicillin")
-                ])
-            ]),
-            React.createElement('h3', { key: "hospitals", className: "font-bold uppercase tracking-wider text-sm mt-4" }, "Nearest Hospitals"),
-            React.createElement('div', { key: "hospital-list", className: "space-y-2" }, [
-                React.createElement('div', { key: "h1", className: "p-3 bg-white/5 rounded-xl text-sm" }, "Tulane Medical • 1.2 km"),
-                React.createElement('div', { key: "h2", className: "p-3 bg-white/5 rounded-xl text-sm" }, "University Medical • 2.4 km")
-            ])
-        ]);
-    };
+    // Glitch effect on hero text
+    const heroTitle = document.querySelector('.hero h1');
+    if (heroTitle) {
+        heroTitle.setAttribute('data-text', heroTitle.innerText);
+    }
 
-    const StreakCard = ({ streak, totalRides }) => {
-        return React.createElement('div', { className: "bg-gradient-to-br from-orange-600/20 to-transparent rounded-2xl p-5 border border-orange-500/30" }, [
-            React.createElement('div', { key: "title", className: "text-xs font-black uppercase tracking-wider text-orange-500 mb-3" }, "RIDE STREAK"),
-            React.createElement('div', { key: "streak", className: "text-6xl font-black text-orange-500 mb-2" }, streak),
-            React.createElement('p', { key: "sub", className: "text-sm text-zinc-400 mb-4" }, "days in a row 🔥"),
-            React.createElement('div', { key: "total", className: "border-t border-white/10 pt-3 mt-2" }, [
-                React.createElement('div', { key: "label", className: "text-xs text-zinc-500 uppercase tracking-wider" }, "Total Rides"),
-                React.createElement('div', { key: "value", className: "text-2xl font-bold" }, totalRides)
-            ])
-        ]);
-    };
+    // Initialize
+    resizeCanvas();
+    initParticles(80);
+    drawParticles();
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+    });
 
-    // Main App Component
-    const KickRoX = () => {
-        const [mode, setMode] = useState("stopped");
-        const [ride, setRide] = useState({
-            active: false,
-            speed: 0,
-            maxSpeed: 0,
-            distance: 0,
-            battery: 94,
-            elapsed: 0,
-            streak: 7,
-            totalRides: 42,
+
+    // First Founding FuX signup handler
+    function handleFuxSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            handle: form.handle.value,
+            board: form.board.value || 'Not specified',
+            spot: form.spot.value || 'Not specified',
+            contact: form.contact.value,
+            why: form.why.value || '',
+            type: form.type.value,
+            timestamp: new Date().toISOString()
+        };
+        // Save locally
+        const existing = JSON.parse(localStorage.getItem('founding_fux') || '[]');
+        // Check if already signed up
+        const already = existing.find(f => f.handle.toLowerCase() === data.handle.toLowerCase());
+        if (already) {
+            document.getElementById('fuxMsg').textContent = 'You already on the wall, FuX! See you at the spot.';
+            document.getElementById('fuxMsg').style.display = 'block';
+            return;
+        }
+        existing.push(data);
+        localStorage.setItem('founding_fux', JSON.stringify(existing));
+        // Add to wall
+        addFuxToWall(data);
+        document.getElementById('fuxMsg').textContent = 'Welcome to the First Founding FuX! You are on the wall.';
+        document.getElementById('fuxMsg').style.display = 'block';
+        form.reset();
+    }
+
+    function addFuxToWall(data) {
+        const wall = document.getElementById('fuxWall');
+        const initials = data.handle.substring(0, 2).toUpperCase();
+        const colors = ['#ff4400', '#ff6600', '#ff8800', '#ffaa00'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const card = document.createElement('div');
+        card.className = 'fux-card';
+        card.innerHTML = '<div class=fux-avatar style=background:' + color + ';border-color:' + color + ';>' + initials + '</div><div class=fux-handle>' + data.handle + '</div><div class=fux-board>' + data.board + '</div><div class=fux-spot>&#9670; ' + data.spot + '</div>' + (data.why ? '<div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>' + data.why + '</div>' : '') + '<div class=fux-badge>First Founding FuX</div>';
+        wall.appendChild(card);
+    }
+
+    // Load existing signups from localStorage
+    function loadFuxWall() {
+        const existing = JSON.parse(localStorage.getItem('founding_fux') || '[]');
+        existing.forEach(data => addFuxToWall(data));
+    }
+    loadFuxWall();
+
+    // Make stamp labels toggleable
+    document.querySelectorAll('.fux-stamp input[type=radio]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.fux-stamp').forEach(s => s.classList.remove('selected'));
+            radio.closest('.fux-stamp').classList.add('selected');
         });
-        const [hazards, setHazards] = useState([]);
-        const [squad, setSquad] = useState(INITIAL_SQUAD);
-        const [checkedItems, setCheckedItems] = useState(new Set());
-        const [fallAlert, setFallAlert] = useState({ active: false, countdown: 10 });
-        const [activeTab, setActiveTab] = useState("squad");
-        const [chatMessages, setChatMessages] = useState([
-            { id: "1", sender: "SYSTEM", message: "Ride safe, NOLA!", timestamp: new Date() },
-            { id: "2", sender: "GHOST", message: "Rolling down Decatur", timestamp: new Date() },
-        ]);
-        const [newMessage, setNewMessage] = useState("");
+    });
 
-        const isReady = Array.from(checkedItems).filter(item => 
-            CHECKLIST.find(c => c.label === item && c.required)
-        ).length === CHECKLIST.filter(c => c.required).length;
-
-        const nearbyHazards = useMemo(() => 
-            hazards.filter(h => !h.resolved && h.distanceM < 100).sort((a, b) => a.distanceM - b.distanceM),
-            [hazards]
-        );
-        const criticalHazard = nearbyHazards.find(h => h.distanceM < 30);
-
-        useEffect(() => {
-            if (!ride.active) return;
-            const interval = setInterval(() => {
-                setRide(prev => {
-                    const newSpeed = Math.max(0, Math.min(55, prev.speed + (Math.random() * 4 - 2)));
-                    const newDistance = prev.distance + (newSpeed / 3600) * 0.1;
-                    const newBattery = Math.max(0, prev.battery - 0.03);
-                    return {
-                        ...prev,
-                        speed: Number(newSpeed.toFixed(1)),
-                        maxSpeed: Math.max(prev.maxSpeed, newSpeed),
-                        distance: Number(newDistance.toFixed(2)),
-                        battery: newBattery,
-                        elapsed: prev.elapsed + 1,
-                    };
-                });
-            }, 100);
-            return () => clearInterval(interval);
-        }, [ride.active]);
-
-        useEffect(() => {
-            const hazardInterval = setInterval(() => {
-                if (ride.active && Math.random() < 0.1) {
-                    const newHazard = {
-                        id: Date.now().toString(),
-                        title: Math.random() > 0.5 ? "Pothole ahead" : "Rough pavement",
-                        severity: Math.random() > 0.7 ? "high" : "medium",
-                        distanceM: Math.floor(Math.random() * 80) + 20,
-                        resolved: false,
-                        timestamp: new Date(),
-                    };
-                    setHazards(prev => [...prev, newHazard]);
-                    setTimeout(() => {
-                        setHazards(prev => prev.map(h => h.id === newHazard.id ? { ...h, resolved: true } : h));
-                    }, 120000);
-                }
-            }, 5000);
-            return () => clearInterval(hazardInterval);
-        }, [ride.active]);
-
-        useEffect(() => {
-            const squadInterval = setInterval(() => {
-                if (ride.active) {
-                    setSquad(prev => prev.map(member => 
-                        member.status === "riding" ? 
-                        { ...member, currentSpeed: Math.max(0, Math.min(50, (member.currentSpeed || 0) + (Math.random() * 4 - 2))) } : 
-                        member
-                    ));
-                }
-            }, 2000);
-            return () => clearInterval(squadInterval);
-        }, [ride.active]);
-
-        const startRide = () => {
-            if (!isReady) return;
-            setRide(prev => ({ ...prev, active: true, elapsed: 0, distance: 0, maxSpeed: 0 }));
-            setMode("riding");
-        };
-
-        const stopRide = () => {
-            setRide(prev => ({ ...prev, active: false }));
-            setMode("stopped");
-            const savedRides = JSON.parse(localStorage.getItem("kickrox_rides") || "[]");
-            savedRides.unshift({
-                date: new Date(),
-                distance: ride.distance,
-                maxSpeed: ride.maxSpeed,
-                duration: ride.elapsed,
-            });
-            localStorage.setItem("kickrox_rides", JSON.stringify(savedRides.slice(0, 50)));
-        };
-
-        const triggerFallAlert = () => {
-            setFallAlert({ active: true, countdown: 10 });
-            const timer = setInterval(() => {
-                setFallAlert(prev => {
-                    if (prev.countdown <= 1) {
-                        clearInterval(timer);
-                        alert("🚨 data-tip-bottom=“Hold for 10 seconds if you crash — alerts your squad with your location.” data-tip-bottom=“Hold for 10 seconds if you crash — alerts your squad with your location.” EMERGENCY ALERT SENT TO SQUAD! (SMS + GPS location would be sent in production)");
-                        return { active: false, countdown: 10 };
-                    }
-                    return { ...prev, countdown: prev.countdown - 1 };
-                });
-            }, 1000);
-        };
-
-        const resolveHazard = (id) => {
-            setHazards(prev => prev.map(h => h.id === id ? { ...h, resolved: true } : h));
-        };
-
-        const reportHazard = () => {
-            const title = prompt("What hazard did you spot?", "New hazard");
-            if (title) {
-                const newHazard = {
-                    id: Date.now().toString(),
-                    title: title,
-                    severity: "medium",
-                    distanceM: 0,
-                    resolved: false,
-                    timestamp: new Date(),
-                    reportedBy: "ME",
-                };
-                setHazards(prev => [newHazard, ...prev]);
-            }
-        };
-
-        const sendMessage = () => {
-            if (newMessage.trim()) {
-                setChatMessages(prev => [...prev, {
-                    id: Date.now().toString(),
-                    sender: "YOU",
-                    message: newMessage,
-                    timestamp: new Date()
-                }]);
-                setNewMessage("");
-            }
-        };
-
-        if (fallAlert.active) {
-            return React.createElement(FallAlertOverlay, {
-                countdown: fallAlert.countdown,
-                onAbort: () => setFallAlert({ active: false, countdown: 10 })
-            });
-        }
-
-        if (mode === "riding") {
-            return React.createElement('div', { className: "min-h-screen bg-black text-white flex flex-col" }, [
-                React.createElement('header', { key: "header", className: "flex items-center justify-between p-4 border-b border-white/10 bg-black/50 backdrop-blur" }, [
-                    React.createElement('div', { key: "logo", className: "flex items-center gap-2" }, [
-                        React.createElement('span', { key: "icon", className: "text-2xl" }, "⚡"),
-                        React.createElement('h1', { key: "title", className: "text-xl font-black tracking-tighter" }, "KICK ROX")
-                    ]),
-                    React.createElement('div', { key: "status", className: "flex items-center gap-3" }, [
-                        React.createElement('div', { key: "battery", className: "flex items-center gap-1" }, [
-                            React.createElement('span', { key: "icon", className: "text-sm" }, "🔋"),
-                            React.createElement('span', { key: "percent", className: "text-sm font-bold" }, `${Math.round(ride.battery)}%`)
-                        ]),
-                        React.createElement('button', {
-                            key: "menu",
-                            onClick: () => setMode("stopped"),
-                            className: "px-3 py-1 bg-white/10 rounded-lg text-xs font-bold"
-                        }, "MENU")
-                    ])
-                ]),
-                React.createElement('main', { key: "main", className: "flex-1 flex flex-col items-center justify-center p-6 relative" }, [
-                    React.createElement(Speedometer, { key: "speedo", speed: ride.speed }),
-                    criticalHazard && React.createElement(HazardAlert, {
-                        key: "alert",
-                        hazard: criticalHazard,
-                        onAcknowledge: () => resolveHazard(criticalHazard.id)
-                    }),
-                    React.createElement('div', { key: "stats", className: "absolute bottom-24 left-0 right-0 flex justify-center gap-8" }, [
-                        React.createElement('div', { key: "time", className: "text-center" }, [
-                            React.createElement('div', { key: "value", className: "text-2xl font-black" }, formatTime(ride.elapsed)),
-                            React.createElement('div', { key: "label", className: "text-xs text-zinc-500 uppercase tracking-wider" }, "RIDE TIME")
-                        ]),
-                        React.createElement('div', { key: "dist", className: "text-center" }, [
-                            React.createElement('div', { key: "value", className: "text-2xl font-black" }, `${ride.distance.toFixed(1)}km`),
-                            React.createElement('div', { key: "label", className: "text-xs text-zinc-500 uppercase tracking-wider" }, "DISTANCE")
-                        ])
-                    ])
-                ]),
-                React.createElement('footer', { key: "footer", className: "p-4 space-y-3 border-t border-white/10 bg-black/80 backdrop-blur" }, [
-                    React.createElement('button', {
-                        key: "end",
-                        data-tip-bottom=“Ends your session and saves the ride to your history.” onClick: stopRide,
-                        className: "w-full py-4 bg-red-600 rounded-2xl font-black text-lg uppercase tracking-wider active:scale-95 transition"
-                    }, "END RIDE"),
-                    React.createElement('button', {
-                        key: "emergency",
-                        onClick: triggerFallAlert,
-                        className: "w-full py-3 bg-white/10 rounded-xl font-bold uppercase tracking-wider text-red-400 active:scale-95 transition"
-                    }, "🆘 EMERGENCY"),
-                    squad.filter(s => s.status === "riding").length > 0 && 
-                        React.createElement('div', { key: "squad", className: "text-center text-xs text-zinc-500" }, 
-                            `${squad.filter(s => s.status === "riding").length} riders nearby`
-                        )
-                ])
-            ]);
-        }
-
-        const completedRequired = CHECKLIST.filter(i => i.required).every(i => checkedItems.has(i.label));
-        const completionPercentage = (Array.from(checkedItems).filter(item => CHECKLIST.find(c => c.label === item && c.required)).length / CHECKLIST.filter(c => c.required).length) * 100;
-
-        return React.createElement('div', { className: "min-h-screen bg-gradient-to-br from-zinc-950 via-black to-zinc-950 text-white" }, [
-            React.createElement('div', { key: "container", className: "max-w-7xl mx-auto p-4 md:p-6" }, [
-                React.createElement('header', { key: "header", className: "flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8" }, [
-                    React.createElement('div', { key: "logo", className: "flex items-center gap-3" }, [
-                        React.createElement('div', { key: "icon", className: "w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center text-2xl" }, "⚡"),
-                        React.createElement('div', { key: "text" }, [
-                            React.createElement('h1', { key: "title", className: "text-3xl font-black tracking-tighter" }, "KICK ROX"),
-                            React.createElement('p', { key: "sub", className: "text-xs text-orange-500 uppercase tracking-wider" }, "NOLA ESK8 • RIDE OR DIE")
-                        ])
-                    ]),
-                    React.createElement('button', {
-                        key: "start",
-                        data-tip=“Complete all required safety checks, then tap START RIDE.” onClick: startRide,
-                        disabled: !completedRequired,
-                        className: `px-6 py-2 rounded-xl font-black uppercase tracking-wider transition ${
-                            completedRequired ? "bg-orange-500 text-black hover:bg-orange-400" : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                        }`
-                    }, "START RIDE")
-                ]),
-                
-                React.createElement('div', { key: "grid", className: "grid lg:grid-cols-3 gap-6" }, [
-                    React.createElement('div', { key: "left", className: "space-y-6" }, [
-                        React.createElement('div', { key: "checklist", className: "bg-white/5 rounded-2xl p-5 border border-white/10" }, [
-                            React.createElement('div', { key: "header", className: "flex justify-between items-center mb-4" }, [
-                                React.createElement('div', { key: "text" }, [
-                                    React.createElement('h2', { key: "label", className: "text-sm font-black uppercase tracking-wider text-orange-500" }, "PRE-RIDE"),
-                                    React.createElement('p', { key: "title", className: "text-xl font-black" }, "Safety Check")
-                                ]),
-                                React.createElement('span', { key: "icon", className: "text-2xl" }, "🛡️")
-                            ]),
-                            React.createElement('div', { key: "progress", className: "mb-4 h-2 bg-zinc-800 rounded-full overflow-hidden" }, [
-                                React.createElement('div', { key: "bar", className: "h-full bg-orange-500 transition-all duration-300", style: { width: `${completionPercentage}%` } })
-                            ]),
-                            React.createElement('div', { key: "items", className: "space-y-2 max-h-64 overflow-y-auto hide-scrollbar" }, 
-                                CHECKLIST.map(item => React.createElement('button', {
-                                    key: item.id,
-                                    onClick: () => {
-                                        const next = new Set(checkedItems);
-                                        next.has(item.label) ? next.delete(item.label) : next.add(item.label);
-                                        setCheckedItems(next);
-                                    },
-                                    className: "w-full flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition text-left"
-                                }, [
-                                    React.createElement('span', { key: "label", className: "flex items-center gap-2 text-sm" }, [
-                                        data-tip=“Toggle this safety check. All required items must be done before you can ride.” checkedItems.has(item.label) ? "✅" : "○",
-                                        item.label
-                                    ]),
-                                    item.required && React.createElement('span', { key: "req", className: "text-xs text-orange-500" }, "Required")
-                                ]))
-                            )
-                        ]),
-                        React.createElement(StreakCard, { key: "streak", streak: ride.streak, totalRides: ride.totalRides })
-                    ]),
-                    
-                    React.createElement('div', { key: "middle", className: "space-y-6" }, [
-                        React.createElement('div', { key: "tabs", className: "flex gap-1 bg-white/5 rounded-xl p-1" }, 
-                            ["squad", "hazards", "ice", "chat"].map(tab => React.createElement('button', {
-                                key: tab,
-                                onClick: () => setActiveTab(tab),
-                                className: `flex-1 py-2 rounded-lg text-sm font-bold uppercase transition ${
-                                    activeTab === tab ? "bg-orange-500 text-black" : "text-zinc-400"
-                                }`
-                            }, tab === "squad" ? "👥 Squad" : tab === "hazards" ? "⚠️ Hazards" : tab === "ice" ? "❤️ ICE" : "💬 Chat"))
-                        ),
-                        React.createElement('div', { key: "content", className: "bg-white/5 rounded-2xl p-5 border border-white/10 min-h-[400px]" }, [
-                            activeTab === "squad" && React.createElement(SquadStatus, { key: "squad", squad: squad }),
-                            activeTab === "hazards" && React.createElement('div', { key: "hazards", className: "space-y-3" }, [
-                                React.createElement('div', { key: "header", className: "flex justify-between items-center" }, [
-                                    React.createElement('h3', { key: "title", className: "font-black" }, "Nearby Hazards"),
-                                    React.createElement('button', { key: "report", data-tip=“Report a road hazard for the crew: pothole, glass, wet pavement, debris.” onClick: reportHazard, className: "text-xs bg-orange-500 px-3 py-1 rounded-full" }, "+ REPORT")
-                                ]),
-                                hazards.filter(h => !h.resolved).length === 0 ? 
-                                    React.createElement('div', { key: "empty", className: "text-center text-zinc-500 py-8" }, [
-                                        React.createElement('div', { key: "icon", className: "text-4xl mb-2" }, "🛡️"),
-                                        React.createElement('p', { key: "text" }, "No hazards reported nearby")
-                                    ]) :
-                                    hazards.filter(h => !h.resolved).map(hazard => 
-                                        React.createElement('div', { key: hazard.id, className: `p-3 rounded-xl border ${
-                                            hazard.severity === 'high' ? 'border-red-500/30 bg-red-500/10' :
-                                            hazard.severity === 'medium' ? 'border-orange-500/30 bg-orange-500/10' :
-                                            'border-yellow-500/30 bg-yellow-500/10'
-                                        }` }, [
-                                            React.createElement('div', { key: "row", className: "flex justify-between items-start" }, [
-                                                React.createElement('div', { key: "info" }, [
-                                                    React.createElement('div', { key: "title", className: "font-bold text-sm" }, hazard.title),
-                                                    React.createElement('div', { key: "dist", className: "text-xs text-zinc-400" }, `${hazard.distanceM}m ahead`)
-                                                ]),
-                                                React.createElement('button', {
-                                                    key: "resolve",
-                                                    onClick: () => resolveHazard(hazard.id),
-                                                    className: "text-xs px-2 py-1 bg-white/10 rounded"
-                                                }, "Clear")
-                                            ])
-                                        ])
-                                    )
-                            ]),
-                            activeTab === "ice" && React.createElement(ICEPanel, { key: "ice" }),
-                            activeTab === "chat" && React.createElement('div', { key: "chat", className: "space-y-3" }, [
-                                React.createElement('div', { key: "messages", className: "h-64 overflow-y-auto space-y-2 hide-scrollbar" }, 
-                                    chatMessages.map(msg => React.createElement('div', { key: msg.id, className: `p-2 rounded-lg text-xs ${msg.sender === "SYSTEM" ? 'bg-orange-500/20' : 'bg-white/5'}` }, [
-                                        React.createElement('span', { key: "sender", className: "text-orange-400 font-bold" }, msg.sender),
-                                        React.createElement('span', { key: "message", className: "ml-2" }, msg.message)
-                                    ]))
-                                ),
-                                React.createElement('div', { key: "input", className: "flex gap-2" }, [
-                                    React.createElement('input', {
-                                        key: "field",
-                                        type: "text",
-                                        value: newMessage,
-                                        onChange: (e) => setNewMessage(e.target.value),
-                                        onKeyPress: (e) => e.key === 'Enter' && sendMessage(),
-                                        placeholder: "Squad chat...",
-                                        className: "flex-1 bg-white/10 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500"
-                                    }),
-                                    React.createElement('button', {
-                                        key: "send",
-                                        onClick: sendMessage,
-                                        className: "px-4 py-2 bg-orange-500 rounded-xl text-sm font-bold"
-                                    }, "SEND")
-                                ])
-                            ])
-                        ])
-                    ]),
-                    
-                    React.createElement('div', { key: "right", className: "space-y-6" }, [
-                        React.createElement('div', { key: "map", className: "bg-white/5 rounded-2xl p-5 border border-white/10" }, [
-                            React.createElement('div', { key: "header", className: "flex justify-between items-center mb-4" }, [
-                                React.createElement('h2', { key: "title", className: "text-sm font-black uppercase tracking-wider text-orange-500" }, "LIVE MAP"),
-                                React.createElement('span', { key: "icon", className: "text-sm" }, "📍")
-                            ]),
-                            React.createElement('div', { key: "preview", className: "relative h-48 bg-gradient-to-br from-orange-500/20 to-transparent rounded-xl overflow-hidden flex items-center justify-center" }, [
-                                React.createElement('div', { key: "center", className: "text-center" }, [
-                                    React.createElement('div', { key: "icon", className: "text-4xl mb-2 opacity-50" }, "⚡"),
-                                    React.createElement('p', { key: "text", className: "text-xs text-zinc-500" }, "GPS Ready")
-                                ])
-                            ]),
-                            React.createElement('div', { key: "stats", className: "mt-3 grid grid-cols-2 gap-2 text-center text-xs" }, [
-                                React.createElement('div', { key: "safe", className: "bg-white/5 p-2 rounded" }, [
-                                    React.createElement('div', { key: "value", className: "text-orange-400" }, "2.4km"),
-                                    React.createElement('div', { key: "label", className: "text-zinc-500" }, "To Safe Zone")
-                                ]),
-                                React.createElement('div', { key: "active", className: "bg-white/5 p-2 rounded" }, [
-                                    React.createElement('div', { key: "value", className: "text-orange-400" }, `${squad.filter(s => s.status === "riding").length} riders`),
-                                    React.createElement('div', { key: "label", className: "text-zinc-500" }, "Active Now")
-                                ])
-                            ])
-                        ]),
-                        React.createElement('div', { key: "stats-card", className: "bg-white/5 rounded-2xl p-5 border border-white/10" }, [
-                            React.createElement('h2', { key: "title", className: "text-sm font-black uppercase tracking-wider text-orange-500 mb-3" }, "QUICK STATS"),
-                            React.createElement('div', { key: "stats-list", className: "space-y-2" }, [
-                                React.createElement('div', { key: "today", className: "flex justify-between" }, [
-                                    React.createElement('span', { key: "label", className: "text-zinc-400" }, "Today's Rides"),
-                                    React.createElement('span', { key: "value", className: "font-bold" }, "1")
-                                ]),
-                                React.createElement('div', { key: "week", className: "flex justify-between" }, [
-                                    React.createElement('span', { key: "label", className: "text-zinc-400" }, "This Week"),
-                                    React.createElement('span', { key: "value", className: "font-bold" }, "87 km")
-                                ]),
-                                React.createElement('div', { key: "top", className: "flex justify-between" }, [
-                                    React.createElement('span', { key: "label", className: "text-zinc-400" }, "Top Speed"),
-                                    React.createElement('span', { key: "value", className: "font-bold text-orange-400" }, "48.2 km/h")
-                                ])
-                            ])
-                        ])
-                    ])
-                ])
-            ])
-        ]);
-    };
-
-    // Render the app
-    const rootElement = document.getElementById('root');
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(React.createElement(KickRoX));
 </script>
 </body>
 </html>
