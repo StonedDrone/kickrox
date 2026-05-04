@@ -309,7 +309,7 @@
                 setFallAlert(prev => {
                     if (prev.countdown <= 1) {
                         clearInterval(timer);
-                        alert("🚨 EMERGENCY ALERT SENT TO SQUAD! (SMS + GPS location would be sent in production)");
+                        alert("🚨 data-tip-bottom=“Hold for 10 seconds if you crash — alerts your squad with your location.” EMERGENCY ALERT SENT TO SQUAD! (SMS + GPS location would be sent in production)");
                         return { active: false, countdown: 10 };
                     }
                     return { ...prev, countdown: prev.countdown - 1 };
