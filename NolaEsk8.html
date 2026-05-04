@@ -369,6 +369,108 @@
                 min-width: 60px;
             }
         }
+
+
+        /* First Founding FuX */
+        .fux-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .fux-card {
+            background: rgba(255,68,0,0.08);
+            border: 1px solid rgba(255,68,0,0.25);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .fux-card:hover {
+            border-color: #ff4400;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255,68,0,0.15);
+        }
+        .fux-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ff4400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin: 0 auto 0.75rem;
+            color: #000;
+            border: 2px solid #ff4400;
+        }
+        .fux-handle {
+            font-weight: 900;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+        .fux-board {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .fux-spot {
+            color: #ff4400;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .fux-badge {
+            display: inline-block;
+            background: #ff4400;
+            color: #000;
+            font-size: 0.6rem;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+        .fux-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .fux-form-grid .full {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 600px) {
+            .fux-form-grid { grid-template-columns: 1fr; }
+            .fux-wall { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
+        .fux-stamp {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,68,0,0.1);
+            border: 1px solid rgba(255,68,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ff4400;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fux-stamp:hover {
+            background: #ff4400;
+            color: #000;
+        }
+        .fux-stamp input { display: none; }
+        .fux-stamp.selected {
+            background: #ff4400;
+            color: #000;
+        }
+    
     </style>
 </head>
 <body>
@@ -512,6 +614,90 @@
         </div>
     </section>
 
+    
+    <!-- FIRST FOUNDING FUX -->
+    <section id=fux>
+        <h2 class=section-title>THE FIRST <span class=fire-text>FOUNDING FUX</span></h2>
+        <div class=card style=max-width:700px;margin:0 auto 2rem;text-align:center;>
+            <div class=card-icon>&#9878;</div>
+            <p style=font-size:1.1rem;margin:1rem 0 0.5rem;>These are the ones who gave a FuX.</p>
+            <p style=color:#888;font-size:0.9rem;>Before Parisite burned. Before the tracker existed. Before the crowd showed up. You were there when it mattered.</p>
+            <p style=color:#ff4400;font-weight:bold;margin-top:0.75rem;>That earns you a permanent spot on this wall.</p>
+        </div>
+
+        <!-- The Crew Wall -->
+        <div class=fux-wall id=fuxWall>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9878;</div>
+                <div class=fux-handle>StonedDrone</div>
+                <div class=fux-board>Veymax Mini 2</div>
+                <div class=fux-spot>&#9670; Lower 9th Ward</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9832;</div>
+                <div class=fux-handle>GHOST</div>
+                <div class=fux-board>Own board TBD</div>
+                <div class=fux-spot>&#9670; French Quarter</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9834;</div>
+                <div class=fux-handle>VOODOO</div>
+                <div class=fux-board>Own board TBD</div>
+                <div class=fux-spot>&#9670; Marigny</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+            <div class=fux-card>
+                <div class=fux-avatar>&#9827;</div>
+                <div class=fux-handle>SWAMP</div>
+                <div class=fux-board>Own board TBD</div>
+                <div class=fux-spot>&#9670; Irish Channel</div>
+                <div class=fux-badge>First Founding FuX</div>
+            </div>
+        </div>
+
+        <!-- Sign Up -->
+        <div class=card style=max-width:600px;margin:2.5rem auto 0;text-align:center;>
+            <h3 style=font-size:1.4rem;margin-bottom:0.5rem;>&#9878; JOIN THE FOUNDING FUX</h3>
+            <p style=color:#888;font-size:0.9rem;margin-bottom:1.5rem;>Give a FuX. Sign up. Get on the wall.</p>
+
+            <form id=fuxForm onsubmit=handleFuxSubmit(event)>
+                <div class=fux-form-grid>
+                    <div class=full>
+                        <input type=text name=handle placeholder=Handle / Rider Name required style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div>
+                        <input type=text name=board placeholder=Your board (e.g. Veymax Mini 2) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div>
+                        <input type=text name=spot placeholder=Your spot (e.g. Lower 9th Ward) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div class=full>
+                        <input type=text name=contact placeholder=Discord or Email (how we reach you) required style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                    <div class=full>
+                        <input type=text name=why placeholder=Why do you ride? (short line) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                    </div>
+                </div>
+                <div style=margin-top:1rem;text-align:left;>
+                    <p style=color:#888;font-size:0.8rem;margin-bottom:0.5rem;>What best describes you?</p>
+                    <div style=display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;>
+                        <label class=fux-stamp><input type=radio name=type value=og checked> OG ESK8</label>
+                        <label class=fux-stamp><input type=radio name=type value=new> New to ESK8</label>
+                        <label class=fux-stamp><input type=radio name=type value=builder> Ramp Builder</label>
+                        <label class=fux-stamp><input type=radio name=type value=vendor> Gear Vendor</label>
+                        <label class=fux-stamp><input type=radio name=type value=crew> Just love the crew</label>
+                    </div>
+                </div>
+                <button type=submit class=btn style=margin-top:1.25rem;width:100%;>GIVE A FUX &#9878;</button>
+            </form>
+            <p id=fuxMsg style=margin-top:1rem;color:#ff4400;font-weight:bold;display:none;></p>
+            <p style=font-size:0.75rem;color:#555;margin-top:0.75rem;>Your info stays on your device. No server. No tracking. Just us.</p>
+        </div>
+    </section>
+
+    
     <!-- ACTION SECTION - PARISITE WILL RISE -->
     <section>
         <h2 class="section-title">PARISITE WILL <span class="fire-text">RISE</span></h2>
@@ -559,7 +745,7 @@
             <a href="https://fux-bible-website-0gbent.abacusai.app/" target="_blank">MY FUX.U PROTOCOL</a>
         </div>
         <div>
-            <p>NOLA ESK8 • Safety First. Ride or Die.</p>
+            <p>&#9878; NOLA ESK8 • Safety First. Ride or Die.</p><p style=font-size:0.8rem;margin-top:0.5rem;color:#ff4400;>First Founding FuX: the ones who gave a FuX first.</p>
             <p style="font-size: 0.8rem; margin-top: 1rem;">"I gave my only FuX to the FuX.U"</p>
             <p style="font-size: 0.7rem; margin-top: 1rem;">#ParisiteRises #NOLAESK8 #FUXUSafetyFirst #XGames2026</p>
         </div>
@@ -673,6 +859,65 @@
     window.addEventListener('resize', () => {
         resizeCanvas();
     });
+
+
+    // First Founding FuX signup handler
+    function handleFuxSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            handle: form.handle.value,
+            board: form.board.value || 'Not specified',
+            spot: form.spot.value || 'Not specified',
+            contact: form.contact.value,
+            why: form.why.value || '',
+            type: form.type.value,
+            timestamp: new Date().toISOString()
+        };
+        // Save locally
+        const existing = JSON.parse(localStorage.getItem('founding_fux') || '[]');
+        // Check if already signed up
+        const already = existing.find(f => f.handle.toLowerCase() === data.handle.toLowerCase());
+        if (already) {
+            document.getElementById('fuxMsg').textContent = 'You already on the wall, FuX! See you at the spot.';
+            document.getElementById('fuxMsg').style.display = 'block';
+            return;
+        }
+        existing.push(data);
+        localStorage.setItem('founding_fux', JSON.stringify(existing));
+        // Add to wall
+        addFuxToWall(data);
+        document.getElementById('fuxMsg').textContent = 'Welcome to the First Founding FuX! You are on the wall.';
+        document.getElementById('fuxMsg').style.display = 'block';
+        form.reset();
+    }
+
+    function addFuxToWall(data) {
+        const wall = document.getElementById('fuxWall');
+        const initials = data.handle.substring(0, 2).toUpperCase();
+        const colors = ['#ff4400', '#ff6600', '#ff8800', '#ffaa00'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const card = document.createElement('div');
+        card.className = 'fux-card';
+        card.innerHTML = '<div class=fux-avatar style=background:' + color + ';border-color:' + color + ';>' + initials + '</div><div class=fux-handle>' + data.handle + '</div><div class=fux-board>' + data.board + '</div><div class=fux-spot>&#9670; ' + data.spot + '</div><div class=fux-badge>First Founding FuX</div>';
+        wall.appendChild(card);
+    }
+
+    // Load existing signups from localStorage
+    function loadFuxWall() {
+        const existing = JSON.parse(localStorage.getItem('founding_fux') || '[]');
+        existing.forEach(data => addFuxToWall(data));
+    }
+    loadFuxWall();
+
+    // Make stamp labels toggleable
+    document.querySelectorAll('.fux-stamp input[type=radio]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.fux-stamp').forEach(s => s.classList.remove('selected'));
+            radio.closest('.fux-stamp').classList.add('selected');
+        });
+    });
+
 </script>
 </body>
 </html>
