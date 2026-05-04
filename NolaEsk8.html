@@ -422,6 +422,7 @@
             font-size: 0.75rem;
             font-weight: 700;
         }
+        .fux-why { margin-top: 0.5rem; font-size: 0.8rem; color: #aaa; font-style: italic; padding-top: 0.5rem; border-top: 1px solid rgba(255,68,0,0.15); line-height: 1.4; }
         .fux-badge {
             display: inline-block;
             background: #ff4400;
@@ -629,28 +630,28 @@
         <div class=fux-wall id=fuxWall>
             <div class=fux-card>
                 <div class=fux-avatar>&#9878;</div>
-                <div class=fux-handle>StonedDrone</div>
+                <div class=fux-handle>StonedDrone</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>To give the crew something real. Safety. Tracking. A way to find each other when it matters.</div>
                 <div class=fux-board>Veymax Mini 2</div>
                 <div class=fux-spot>&#9670; Lower 9th Ward</div>
                 <div class=fux-badge>First Founding FuX</div>
             </div>
             <div class=fux-card>
                 <div class=fux-avatar>&#9832;</div>
-                <div class=fux-handle>GHOST</div>
+                <div class=fux-handle>GHOST</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>Riding since day one. Parisite was home. I stay for the people.</div>
                 <div class=fux-board>Own board TBD</div>
                 <div class=fux-spot>&#9670; French Quarter</div>
                 <div class=fux-badge>First Founding FuX</div>
             </div>
             <div class=fux-card>
                 <div class=fux-avatar>&#9834;</div>
-                <div class=fux-handle>VOODOO</div>
+                <div class=fux-handle>VOODOO</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>The streets of NOLA built different. We ride because we have to.</div>
                 <div class=fux-board>Own board TBD</div>
                 <div class=fux-spot>&#9670; Marigny</div>
                 <div class=fux-badge>First Founding FuX</div>
             </div>
             <div class=fux-card>
                 <div class=fux-avatar>&#9827;</div>
-                <div class=fux-handle>SWAMP</div>
+                <div class=fux-handle>SWAMP</div><div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>Found my crew under that bridge. Not stopping now.</div>
                 <div class=fux-board>Own board TBD</div>
                 <div class=fux-spot>&#9670; Irish Channel</div>
                 <div class=fux-badge>First Founding FuX</div>
@@ -677,7 +678,7 @@
                         <input type=text name=contact placeholder=Discord or Email (how we reach you) required style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
                     </div>
                     <div class=full>
-                        <input type=text name=why placeholder=Why do you ride? (short line) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
+                        <input type=text name=why placeholder=Why I joined NOLA ESK8... (what keeps you rolling?)... (what keeps you rolling?) style=width:100%;padding:0.875rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,68,0,0.3);border-radius:0.5rem;color:#fff;font-size:0.95rem;>
                     </div>
                 </div>
                 <div style=margin-top:1rem;text-align:left;>
@@ -899,7 +900,7 @@
         const color = colors[Math.floor(Math.random() * colors.length)];
         const card = document.createElement('div');
         card.className = 'fux-card';
-        card.innerHTML = '<div class=fux-avatar style=background:' + color + ';border-color:' + color + ';>' + initials + '</div><div class=fux-handle>' + data.handle + '</div><div class=fux-board>' + data.board + '</div><div class=fux-spot>&#9670; ' + data.spot + '</div><div class=fux-badge>First Founding FuX</div>';
+        card.innerHTML = '<div class=fux-avatar style=background:' + color + ';border-color:' + color + ';>' + initials + '</div><div class=fux-handle>' + data.handle + '</div><div class=fux-board>' + data.board + '</div><div class=fux-spot>&#9670; ' + data.spot + '</div>' + (data.why ? '<div class=fux-why style=margin-top:0.5rem;font-size:0.8rem;color:#aaa;font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,68,0,0.15);>' + data.why + '</div>' : '') + '<div class=fux-badge>First Founding FuX</div>';
         wall.appendChild(card);
     }
 
